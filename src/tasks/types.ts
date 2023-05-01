@@ -12,6 +12,85 @@ export interface ArticleInfoResponse {
   extension: null;
 }
 
+// mystic.json and covenant.json
+
+export interface HeroTimeline {
+  nid?:       number[] | number;
+  type:       Type;
+  dt:         Array<Date | number>;
+  name?:      string;
+  c:         Character[];
+  a?:         Artifact[];
+  thumbnail?: string;
+}
+
+export interface Character {
+  id:   string;
+  new?: boolean;
+}
+
+export interface Artifact {
+  id:   string;
+  new?: boolean;
+}
+
+export enum Type {
+  Covenant = "covenant",
+  Limited = "limited",
+  Mystic = "mystic"
+}
+
+// HeroDatabase.json
+export interface HeroDatabase {
+  [key: string]: Hero
+}
+
+export interface Hero {
+  id:        string;
+  _id:       string;
+  name:      string;
+  rarity:    number;
+  attribute: Attribute;
+  role:      Role;
+  sex:       number;
+  zodiac:    Zodiac;
+  limited?:  boolean;
+  gacha?:    boolean;
+}
+
+export enum Attribute {
+  Dark = "dark",
+  Fire = "fire",
+  Ice = "ice",
+  Light = "light",
+  Wind = "wind",
+}
+
+export enum Role {
+  Assassin = "assassin",
+  Knight = "knight",
+  Mage = "mage",
+  Manauser = "manauser",
+  Ranger = "ranger",
+  Warrior = "warrior",
+}
+
+export enum Zodiac {
+  Archer = "archer",
+  Bull = "bull",
+  Crab = "crab",
+  Fish = "fish",
+  Goat = "goat",
+  Leo = "leo",
+  Lion = "lion",
+  Maiden = "maiden",
+  RAM = "ram",
+  Scales = "scales",
+  Scorpion = "scorpion",
+  Twins = "twins",
+  Waterbearer = "waterbearer",
+}
+
 interface ArticleInfo {
   cafe_key: string;
   channel_key: string;

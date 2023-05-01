@@ -13,7 +13,7 @@ import PersistanceDB from "./schemas/Persistance";
 import { GuildOption } from "./types";
 import mongoose from "mongoose";
 import { PersistanceOption } from "./types";
-
+import { Attribute } from "./tasks/types";
 type colorType = "text" | "variable" | "error";
 
 const themeColors = {
@@ -22,7 +22,19 @@ const themeColors = {
   error: "#f5426c",
 };
 
+const attributeColors = {
+  dark: "#BA43B7",
+  fire: "#E74933",
+  ice: "#27B8FF",
+  light: "#FFCE45",
+  wind: "#95D02E",
+};
+
 export const getThemeColor = (color: colorType) => Number(`0x${themeColors[color].substring(1)}`);
+
+export const getColorFromAttribute = (attribute: Attribute): string => {
+  return attributeColors[attribute];
+};
 
 export const color = (color: colorType, message: any) => {
   return chalk.hex(themeColors[color])(message);
@@ -33,6 +45,15 @@ export const shorten = (text: string, width: number, placeholder: string = "..."
     return text;
   }
   return text.substring(0, width - placeholder.length) + placeholder;
+};
+
+export const toTitleCase = (text: string): string => {
+  return text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+export const getUnixTimestamp = (date: Date | string) => {
+  const inputDate = typeof date === "string" ? new Date(date) : date;
+  return inputDate.getTime() / 1000;
 };
 
 export const checkPermissions = (member: GuildMember, permissions: Array<PermissionResolvable>) => {
@@ -71,11 +92,12 @@ export const setGuildOption = async (guild: Guild, option: GuildOption, value: a
   foundGuild.save();
 };
 
-export const getPersistanceOption = async (option: PersistanceOption) => {
+export const getPersistance = async () => {
   if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
+  console.log('Reading database')
   let foundPersistance = await PersistanceDB.find();
   if (!foundPersistance) return null;
-  return foundPersistance[0][option];
+  return foundPersistance[0];
 };
 
 export const setPersistanceOption = async (option: PersistanceOption, value: never) => {

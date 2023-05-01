@@ -2,7 +2,8 @@ import axios from "axios";
 import { parse } from "node-html-parser";
 import { EmbedBuilder } from "discord.js";
 import { ArticleInfoResponse, ArticleListResponse } from "./types";
-import { getPersistanceOption, setPersistanceOption, shorten } from "../functions";
+import { getPersistance, setPersistanceOption, shorten } from "../functions";
+import { IPersistance } from "../types";
 
 interface Article {
   title: string;
@@ -12,6 +13,8 @@ interface Article {
 }
 
 const defaultThumbnail = "https://cdn.discordapp.com/embed/avatars/1.png";
+
+let currentIDs: string[] = [];
 
 export async function checkArticles() {
   let embeds: EmbedBuilder[] = [];
@@ -34,7 +37,11 @@ export async function checkArticles() {
     })
     .reverse();
 
-  const currentIDs = (await getPersistanceOption("articleIDs")) || []; // from database
+  if (!currentIDs.length) {
+    currentIDs = ((await getPersistance()) as IPersistance)?.articleIDs || [];
+  }
+
+  // const currentIDs = (await getPersistance())?.articleIDs || []; // from database
   const fetchedIds = fetchedArticles.map((article) => article.id); // from request
 
   const hasChanged = !fetchedIds.every((item) => currentIDs.includes(item));

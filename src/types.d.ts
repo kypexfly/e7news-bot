@@ -27,6 +27,7 @@ interface GuildOptions {
   prefix: string;
   newsChannelID: string;
   chestChannelID: string;
+  timelineChannelID: string;
 }
 
 export interface IGuild extends mongoose.Document {
@@ -56,7 +57,8 @@ declare global {
       TOKEN: string;
       CLIENT_ID: string;
       PREFIX: string;
-      NEWS_CHECK_INTERVAL: number;
+      NEWS_CHECK_CRON: string;
+      TIMELINE_CHECK_CRON: string;
       MONGO_URI: string;
       MONGO_DATABASE_NAME: string;
     }
