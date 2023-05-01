@@ -39,9 +39,9 @@ export async function checkTimeline() {
       } else {
         embeds.push(createHeroEmbed(null, covenants[i]));
       }
-      ++lastCovenant;
-      setPersistanceOption("lastCovenant", lastCovenant as never);
     }
+    ++lastCovenant;
+    setPersistanceOption("lastCovenant", lastCovenant as never);
   }
 
   if (!(lastMystic === mystics.length - 1)) {
