@@ -39,8 +39,8 @@ export async function checkTimeline() {
       } else {
         embeds.push(createHeroEmbed(null, covenants[i]));
       }
+      ++lastCovenant;
     }
-    ++lastCovenant;
     setPersistanceOption("lastCovenant", lastCovenant as never);
   }
 
@@ -54,8 +54,8 @@ export async function checkTimeline() {
       } else {
         embeds.push(createHeroEmbed(null, mystics[i]));
       }
+      ++lastMystic;
     }
-    ++lastMystic;
     setPersistanceOption("lastMystic", lastMystic as never);
   }
 
