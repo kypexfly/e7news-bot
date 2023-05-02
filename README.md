@@ -4,9 +4,15 @@ This project was bootstrapped from [Discord.js v14 Bot Template](https://github.
 
 ## Features
 
-* Get Epic Seven news from STOVE
-* Get chest password
-* More implementations in the future...
+* Get Epic Seven news from [https://ceciliabot.github.io/timeline/]()
+* Get chest password for watching videos
+* Get timeline banners from [https://ceciliabot.github.io/timeline/](CeciliaBot)
+
+## To do (low priority)
+
+* Use proper cache system for database
+* Add proper automate tests
+* Improve error handling
 
 ## Installation
 
@@ -15,8 +21,9 @@ Clone the repository then create a file named `.env` and fill it out accordingly
 ```js
 TOKEN=YOURTOKENHERE
 CLIENT_ID=BOTS CLIENT ID
-PREFIX=!
-NEWS_CHECK_INTERVAL=TIME IN MILISECONDS
+PREFIX=$
+NEWS_CHECK_CRON=A CRON TIME STRING
+TIMELINE_CHECK_CRON=A CRON TIME STRING
 MONGO_URI=YOUR MONGO CONNECTION STRING
 MONGO_DATABASE_NAME=YOUR DATABASE NAME
 ```
