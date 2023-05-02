@@ -11,7 +11,7 @@ import { Hero, HeroDatabase, HeroTimeline } from "./types";
 import { IPersistance } from "../types";
 
 // last convenant and mystic dont need to be cached because it runs one time every 24 hours
-export async function checkTimeline() {
+export async function getUpdatedTimeline() {
   let { lastCovenant, lastMystic } = (await getPersistance()) as IPersistance;
 
   const embeds: EmbedBuilder[] = [];

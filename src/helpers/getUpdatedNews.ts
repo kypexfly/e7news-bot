@@ -16,7 +16,7 @@ const defaultThumbnail = "https://cdn.discordapp.com/embed/avatars/1.png";
 
 let currentIDs: string[] = [];
 
-export async function checkArticles() {
+export async function getUpdatedNews() {
   let embeds: EmbedBuilder[] = [];
   let chestMessages: string = "";
 
