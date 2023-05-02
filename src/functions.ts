@@ -5,15 +5,13 @@ import {
   GuildMember,
   PermissionFlagsBits,
   PermissionResolvable,
-  PermissionsBitField,
-  TextChannel,
+  TextChannel
 } from "discord.js";
+import mongoose from "mongoose";
+import { Attribute } from "./helpers/types";
 import GuildDB from "./schemas/Guild";
 import PersistanceDB from "./schemas/Persistance";
-import { GuildOption } from "./types";
-import mongoose from "mongoose";
-import { PersistanceOption } from "./types";
-import { Attribute } from "./tasks/types";
+import { GuildOption, PersistanceOption } from "./types";
 type colorType = "text" | "variable" | "error";
 
 const themeColors = {
@@ -94,7 +92,7 @@ export const setGuildOption = async (guild: Guild, option: GuildOption, value: a
 
 export const getPersistance = async () => {
   if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
-  console.log('Reading database')
+  console.log("ℹ️ Accesing Database: for persistance options");
   let foundPersistance = await PersistanceDB.find();
   if (!foundPersistance) return null;
   return foundPersistance[0];
@@ -106,6 +104,12 @@ export const setPersistanceOption = async (option: PersistanceOption, value: nev
   if (!foundPersistance) return null;
   foundPersistance[0][option] = value;
   foundPersistance[0].save();
+};
+
+export const updateGuildOptions = async (guild: Guild | null, fieldsToUpdate: any) => {
+  if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
+  if (!guild) return null;
+  return await GuildDB.findOneAndUpdate({ guildID: guild.id }, { $set: fieldsToUpdate }, { new: true });
 };
 
 // Define a reusable function to send messages to a channel
