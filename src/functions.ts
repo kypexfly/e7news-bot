@@ -1,11 +1,12 @@
 import chalk from "chalk";
 import {
   BaseMessageOptions,
+  EmbedBuilder,
   Guild,
   GuildMember,
   PermissionFlagsBits,
   PermissionResolvable,
-  TextChannel
+  TextChannel,
 } from "discord.js";
 import mongoose from "mongoose";
 import { Attribute } from "./helpers/types";
@@ -122,5 +123,18 @@ export const sendMessageToChannel = async (
   if (!channelID) return;
   const channel = guild.channels.cache.get(channelID) as TextChannel;
   if (!channel) return;
-  await channel.send(messages);
+
+  if (messages.embeds) {
+    const chunkedEmbeds = chunkArray(messages.embeds, 10);
+    for (const chunk of chunkedEmbeds) {
+      await channel.send({ embeds: chunk }); // send each chunk in a separate message
+    }
+  } else {
+    await channel.send(messages);
+  }
 };
+
+// Helper function to split an array into chunks
+function chunkArray<T>(array: T[], size: number) {
+  return Array.from({ length: Math.ceil(array.length / size) }, (_, i) => array.slice(i * size, i * size + size));
+}
