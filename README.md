@@ -29,3 +29,7 @@ MONGO_DATABASE_NAME="YOUR DATABASE NAME"
 ```
 
 Build the project using the typescript module and start the bot using the `npm start` command
+
+## Usage
+
+Invite your bot to your Discord server. Then use `/channels` slash command and set the respective IDs for the news, chest and banner channels.
