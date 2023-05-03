@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import {
   BaseMessageOptions,
-  EmbedBuilder,
   Guild,
   GuildMember,
   PermissionFlagsBits,
@@ -117,20 +116,20 @@ export const updateGuildOptions = async (guild: Guild | null, fieldsToUpdate: an
 export const sendMessageToChannel = async (
   guild: Guild,
   channelOptionName: GuildOption,
-  messages: BaseMessageOptions
+  message: BaseMessageOptions
 ) => {
   const channelID = await getGuildOption(guild, channelOptionName);
   if (!channelID) return;
   const channel = guild.channels.cache.get(channelID) as TextChannel;
   if (!channel) return;
 
-  if (messages.embeds) {
-    const chunkedEmbeds = chunkArray(messages.embeds, 10);
+  if (message.embeds) {
+    const chunkedEmbeds = chunkArray(message.embeds, 10);
     for (const chunk of chunkedEmbeds) {
-      await channel.send({ embeds: chunk }); // send each chunk in a separate message
+      await channel.send({ ...message, embeds: chunk }); // send each chunk in a separate message
     }
   } else {
-    await channel.send(messages);
+    await channel.send(message);
   }
 };
 
