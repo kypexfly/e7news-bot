@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "start": "clear && node build/index.js",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc"
   },
   "keywords": [],
   "author": "Ricardo Chu <kypexfly@users.noreply.github.com>",

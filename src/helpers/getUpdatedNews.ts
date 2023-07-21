@@ -1,18 +1,20 @@
 import axios from "axios";
-import { parse } from "node-html-parser";
 import { EmbedBuilder } from "discord.js";
-import { ArticleInfoResponse, ArticleListResponse } from "./types";
-import { getPersistance, setPersistanceOption, shorten } from "../functions";
+import { getPersistance, setPersistanceOption } from "../functions";
 import { IPersistance } from "../types";
+import type { ArticleInfoResponse } from "./types";
 
 interface Article {
   title: string;
   id: string;
   previewImg: string;
-  description: string;
+  // description: string;
 }
 
-const defaultThumbnail = "https://cdn.discordapp.com/embed/avatars/1.png";
+const DEFAULT_THUMBNAIL = "https://cdn.discordapp.com/embed/avatars/1.png";
+const BASE_API_URL = "https://api.onstove.com/cwms/v1.0/channel/144/article_group/FIXED_ARTICLE/article/list";
+// EXAMPLE:
+// BASE_API_URL + "?article_group_seq_list=1240&interaction_type_code=VIEW,COMMENT&location_code=CURRENT&headline_title_yn=Y&timestemp=1689970381328"
 
 let currentIDs: string[] = [];
 
@@ -20,19 +22,16 @@ export async function getUpdatedNews() {
   let embeds: EmbedBuilder[] = [];
   let chestMessages: string = "";
 
-  const { data } = await axios.post<ArticleListResponse>(
-    "https://api.onstove.com/cafe/v1/ArticleList",
-    ARTICLES_STOVE_API
-  );
+  const { data } = await axios.get<ArticleInfoResponse>(BASE_API_URL);
 
-  const fetchedArticles = data.context.article_list
+  const fetchedArticles = data.value[0].list
     .map((article) => {
-      const { title, card_no, preview_url, content } = article;
+      const { title, article_id, media_thumbnail_url } = article;
       return {
         title: `🔥🔥 ${title}`,
-        id: card_no,
-        previewImg: preview_url || defaultThumbnail,
-        description: shorten(content, 200),
+        id: article_id,
+        previewImg: media_thumbnail_url || DEFAULT_THUMBNAIL,
+        // description: shorten(content, 200),
       };
     })
     .reverse();
@@ -55,38 +54,27 @@ export async function getUpdatedNews() {
 
     const newEmbed = new EmbedBuilder()
       .setTitle(newPost.title)
-      .setDescription(newPost.description)
+      // .setDescription(newPost.description)
       .setURL(`https://page.onstove.com/epicseven/es/view/${newPost.id}`)
       .setThumbnail(newPost.previewImg)
       .setColor("#7DD321");
 
     embeds.push(newEmbed);
 
-    // Check if post is about chest password
-    if (!newPost.title.toLowerCase().includes("contraseña del cofre de regalo")) continue;
+    // // Check if post is about chest password
+    // if (!newPost.title.toLowerCase().includes("contraseña del cofre de regalo")) continue;
 
-    const body = {
-      cafe_key: "epicseven",
-      card_no: fetchedIds[i],
-      channel_key: "es",
-    };
+    // const body = {
+    //   cafe_key: "epicseven",
+    //   card_no: fetchedIds[i],
+    //   channel_key: "es",
+    // };
 
-    const { data } = await axios.post<ArticleInfoResponse>("https://api.onstove.com/cafe/v1/ArticleInfo", body);
-    const password = parse(data.context.content).querySelectorAll("td")[5].text;
-    chestMessages = `@everyone:\t ✨ ${password} ✨`;
+    // const { data } = await axios.post<ArticleInfoResponse>("https://api.onstove.com/cafe/v1/ArticleInfo", body);
+    // const password = parse(data.context.content).querySelectorAll("td")[5].text;
+    // chestMessages = `@everyone:\t ✨ ${password} ✨`;
   }
   setPersistanceOption("articleIDs", fetchedIds as never);
 
   return { embeds, chestMessages };
 }
-
-const ARTICLES_STOVE_API = {
-  cafe_key: "epicseven",
-  channel_key: "es",
-  board_key: "e7es001",
-  page: 1,
-  size: 16,
-  display_opt: "usertag_on,html_remove",
-  direction: "latest",
-  notice_type: "Y",
-};

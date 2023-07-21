@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@discordjs/rest':
     specifier: ^1.1.0
@@ -19,9 +23,6 @@ dependencies:
   dotenv:
     specifier: ^16.0.2
     version: 16.0.2
-  lodash:
-    specifier: ^4.17.21
-    version: 4.17.21
   mongoose:
     specifier: ^6.5.4
     version: 6.5.4
@@ -33,9 +34,6 @@ dependencies:
     version: 6.1.5
 
 devDependencies:
-  '@types/lodash':
-    specifier: ^4.14.194
-    version: 4.14.194
   '@types/node-cron':
     specifier: ^3.0.7
     version: 3.0.7
@@ -167,10 +165,6 @@ packages:
 
   /@tsconfig/node16@1.0.3:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
-    dev: true
-
-  /@types/lodash@4.14.194:
-    resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
     dev: true
 
   /@types/node-cron@3.0.7:
