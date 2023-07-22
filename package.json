@@ -6,6 +6,7 @@
   "scripts": {
     "start": "clear && node build/index.js",
     "build": "tsc -p tsconfig.json",
+    "preview": "pnpm build && pnpm start",
     "typecheck": "tsc"
   },
   "keywords": [],

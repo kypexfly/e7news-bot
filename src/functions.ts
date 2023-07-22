@@ -101,6 +101,7 @@ export const getPersistance = async () => {
 export const setPersistanceOption = async (option: PersistanceOption, value: never) => {
   if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
   let foundPersistance = await PersistanceDB.find();
+  console.log(foundPersistance)
   if (!foundPersistance) return null;
   foundPersistance[0][option] = value;
   foundPersistance[0].save();
