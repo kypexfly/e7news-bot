@@ -7,12 +7,12 @@ import { checkNews } from "../tasks/checkNews";
 const event: BotEvent = {
   name: "ready",
   once: true,
-  execute: (client: Client) => {
+  execute: async (client: Client) => {
     console.log(color("text", `💪 Logged in as ${color("variable", client.user?.tag)}`));
 
     // Run tasks on startup
-    checkNews(client);
-    checkTimeline(client);
+    await checkNews(client);
+    await checkTimeline(client);
   },
 };
 

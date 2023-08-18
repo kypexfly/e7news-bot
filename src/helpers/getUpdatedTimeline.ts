@@ -70,6 +70,9 @@ const createHeroEmbed = (hero: Hero | null, timeline: HeroTimeline) => {
    */
   const { name: nameBanner, dt, type } = timeline;
   const isCustomBanner = !timeline.c || !hero;
+
+  // Old source: `https://res.cloudinary.com/ceciliabot/image/upload/epic-seven/face/${hero.id}_s.png`
+
   const embed = new EmbedBuilder()
     .setTitle(isCustomBanner ? nameBanner ?? null : hero.name)
     .setDescription(
@@ -81,7 +84,7 @@ const createHeroEmbed = (hero: Hero | null, timeline: HeroTimeline) => {
     )
     .setColor(isCustomBanner ? "#C3C3C3" : (getColorFromAttribute(hero.attribute) as ColorResolvable))
     .setThumbnail(
-      isCustomBanner ? null : `https://res.cloudinary.com/ceciliabot/image/upload/epic-seven/face/${hero.id}_s.png`
+      isCustomBanner ? null : `https://raw.githubusercontent.com/CeciliaBot/E7Assets-Temp/main/assets/face/${hero.id}_s.png`
     );
 
   return embed;
