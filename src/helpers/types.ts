@@ -16,6 +16,7 @@ export interface List {
   headline_info:               HeadlineInfo;
   fixed_yn:                    FixedYn;
   title:                       string;
+  content:                     string;
   media_thumbnail_url:         string;
   media_count:                 number;
   user_interaction_score_info: null;
@@ -81,6 +82,7 @@ export interface UserInfo {
   grade_code:          GradeCode;
   channel_grade_code:  GradeCode;
   grade_badge:         GradeBadge;
+  grade_badge_color:   GradeBadgeColor;
   grade_name:          GradeName;
   regist_yn:           FixedYn;
   snapshot_user_info?: UserInfo;
@@ -94,6 +96,10 @@ export enum GradeBadge {
   Official = "OFFICIAL",
 }
 
+export enum GradeBadgeColor {
+  The3191F9 = "#3191F9",
+}
+
 export enum GradeName {
   주관리자 = "주관리자",
 }
@@ -102,6 +108,7 @@ export enum Nickname {
   GMBaal = "GM Baal",
 }
 
+// ****************************************************************
 
 // mystic.json and covenant.json
 

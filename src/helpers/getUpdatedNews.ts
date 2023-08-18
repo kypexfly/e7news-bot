@@ -3,63 +3,69 @@ import { EmbedBuilder } from "discord.js";
 import { getPersistance, setPersistanceOption } from "../functions";
 import { IPersistance } from "../types";
 import type { ArticleInfoResponse } from "./types";
+import { formatHtmlText, properLink, shorten } from "../utils";
 
 interface Article {
   title: string;
   id: string;
   previewImg: string;
+  description: string;
 }
 
 const DEFAULT_THUMBNAIL = "https://cdn.discordapp.com/embed/avatars/1.png";
-const BASE_API_URL = "https://api.onstove.com/cwms/v1.0/channel/144/article_group/FIXED_ARTICLE/article/list";
 
-let currentIDs: string[] = [];
+const BASE_API_URL =
+  "https://api.onstove.com/cwms/v1.0/channel/144/article_group/FIXED_ARTICLE/article/list?article_group_seq_list=1240&content_yn=Y";
+
+let cachedIDs: Set<string> = new Set();
 
 export async function getUpdatedNews() {
-  let embeds: EmbedBuilder[] = [];
-  let chestMessages: string = "";
-
   const { data } = await axios.get<ArticleInfoResponse>(BASE_API_URL);
 
   const fetchedArticles: Article[] = data.value[0].list
     .map((article) => {
-      const { title, article_id, media_thumbnail_url } = article;
+      const { title, article_id, media_thumbnail_url, content } = article;
       return {
         title: `🔥🔥 ${title}`,
         id: article_id,
-        previewImg: media_thumbnail_url || DEFAULT_THUMBNAIL,
+        previewImg: media_thumbnail_url ? properLink(media_thumbnail_url) : DEFAULT_THUMBNAIL,
+        description: shorten(formatHtmlText(content), 200),
       };
     })
     .reverse();
 
-  if (!currentIDs.length) {
-    currentIDs = ((await getPersistance()) as IPersistance)?.articleIDs || [];
+  if (cachedIDs.size === 0) {
+    const persistedData = (await getPersistance()) as IPersistance;
+    cachedIDs = new Set(persistedData?.articleIDs || []);
   }
 
-  const fetchedIds = fetchedArticles.map((article) => article.id); // from request
-  console.log("currentIDs:", currentIDs);
-  console.log("fetchedIds:", fetchedIds);
+  const fetchedIds = fetchedArticles.map((article) => article.id);
 
-  const hasChanged = !fetchedIds.every((item) => currentIDs.includes(item));
-  console.log(hasChanged ? "✅ New articles found" : "❎ No articles found");
-  if (!hasChanged) return { embeds, chestMessages };
-  for (let i = 0; i < fetchedIds.length; i++) {
-    if (currentIDs.includes(fetchedIds[i])) continue;
+  const newIds = fetchedIds.filter((id) => !cachedIDs.has(id));
 
-    currentIDs.push(fetchedIds[i]);
+  // console.log({ cachedIDs, fetchedIds, newIds });
 
-    const newPost = fetchedArticles.find((article) => article.id === fetchedIds[i]) as Article;
+  let embeds: EmbedBuilder[] = [];
 
-    const newEmbed = new EmbedBuilder()
-      .setTitle(newPost.title)
-      .setURL(`https://page.onstove.com/epicseven/es/view/${newPost.id}`)
-      .setThumbnail(newPost.previewImg)
-      .setColor("#7DD321");
+  if (newIds.length === 0) return { embeds };
+
+  for (const newId of newIds) {
+    const newPost = fetchedArticles.find((article) => article.id === newId) as Article;
+
+    const newEmbed = new EmbedBuilder({
+      title: newPost.title,
+      url: `https://page.onstove.com/epicseven/es/view/${newPost.id}`,
+      description: newPost.description,
+      thumbnail: {
+        url: newPost.previewImg,
+      },
+    }).setColor("#7DD321");
 
     embeds.push(newEmbed);
+    cachedIDs.add(newId);
   }
 
-  setPersistanceOption("articleIDs", fetchedIds as never);
+  await setPersistanceOption("articleIDs", Array.from(cachedIDs));
 
-  return { embeds, chestMessages };
+  return { embeds };
 }

@@ -38,13 +38,6 @@ export const color = (color: colorType, message: any) => {
   return chalk.hex(themeColors[color])(message);
 };
 
-export const shorten = (text: string, width: number, placeholder: string = "..."): string => {
-  if (text.length <= width) {
-    return text;
-  }
-  return text.substring(0, width - placeholder.length) + placeholder;
-};
-
 export const toTitleCase = (text: string): string => {
   return text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 };
@@ -87,24 +80,24 @@ export const setGuildOption = async (guild: Guild, option: GuildOption, value: a
   let foundGuild = await GuildDB.findOne({ guildID: guild.id });
   if (!foundGuild) return null;
   foundGuild.options[option] = value;
-  foundGuild.save();
+  await foundGuild.save();
 };
 
 export const getPersistance = async () => {
   if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
   console.log("ℹ️ Accesing Database: for persistance options");
-  let foundPersistance = await PersistanceDB.find();
+  let foundPersistance = await PersistanceDB.find().exec();
   if (!foundPersistance) return null;
   return foundPersistance[0];
 };
 
-export const setPersistanceOption = async (option: PersistanceOption, value: never) => {
+export const setPersistanceOption = async (option: PersistanceOption, value: any) => {
   if (mongoose.connection.readyState === 0) throw new Error("Database not connected.");
-  let foundPersistance = await PersistanceDB.find();
-  console.log(foundPersistance)
+  let foundPersistance = await PersistanceDB.find().exec();
   if (!foundPersistance) return null;
+   // @ts-ignore
   foundPersistance[0][option] = value;
-  foundPersistance[0].save();
+  await foundPersistance[0].save();
 };
 
 export const updateGuildOptions = async (guild: Guild | null, fieldsToUpdate: any) => {
